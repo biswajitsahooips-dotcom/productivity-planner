@@ -1,98 +1,49 @@
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let goals = JSON.parse(localStorage.getItem("goals")) || [];
-
-function save(){
-localStorage.setItem("tasks",JSON.stringify(tasks));
-localStorage.setItem("goals",JSON.stringify(goals));
+const tasks = [
+{
+time: "6:00 AM",
+title: "Wake Up",
+desc: "Start the day and stretch"
+},
+{
+time: "7:00 AM",
+title: "Eat Fruit",
+desc: "Healthy breakfast"
+},
+{
+time: "7:30 AM",
+title: "Read Book",
+desc: "Study or read for 30 minutes"
+},
+{
+time: "9:00 AM",
+title: "Coding Practice",
+desc: "Practice programming"
 }
+];
 
-function addTask(){
+const timeline = document.getElementById("timeline");
 
-let name=document.getElementById("taskName").value;
-let time=document.getElementById("taskTime").value;
-let day=document.getElementById("taskDay").value;
+tasks.forEach(task => {
 
-if(name==="") return;
+const item = document.createElement("div");
+item.className = "timeline-item";
 
-tasks.push({name,time,day,done:false});
+item.innerHTML = `
 
-save();
-display();
-}
+<div class="dot"></div>
 
-function toggleDone(i){
+<div class="card">
 
-tasks[i].done=!tasks[i].done;
+<h3>${task.title}</h3>
 
-save();
-display();
-}
+<p><b>${task.time}</b></p>
 
-function display(){
-
-let planner=document.getElementById("planner");
-planner.innerHTML="";
-
-let done=0;
-
-tasks.forEach((t,i)=>{
-
-if(t.done) done++;
-
-planner.innerHTML+=`
-
-<div class="task">
-
-<b>${t.day}</b>
-
-<div>${t.time}</div>
-
-<div style="text-decoration:${t.done?"line-through":"none"}">
-
-${t.name}
-
-</div>
-
-<button onclick="toggleDone(${i})">✔ Done</button>
+<p>${task.desc}</p>
 
 </div>
 
 `;
 
+timeline.appendChild(item);
+
 });
-
-let progress=(done/tasks.length)*100 || 0;
-
-document.getElementById("progress").style.width=progress+"%";
-}
-
-function addGoal(){
-
-let goal=document.getElementById("goalInput").value;
-
-goals.push(goal);
-
-save();
-
-displayGoals();
-}
-
-function displayGoals(){
-
-let list=document.getElementById("goalList");
-
-list.innerHTML="";
-
-goals.forEach(g=>{
-list.innerHTML+=`<li>${g}</li>`;
-});
-}
-
-function toggleDark(){
-
-document.body.classList.toggle("dark");
-
-}
-
-display();
-displayGoals();
