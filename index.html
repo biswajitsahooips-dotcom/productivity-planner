@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Productivity Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>🚀 Productivity Planner</h1>
+
+<div class="controls">
+
+<input id="taskName" placeholder="Task">
+
+<input id="taskTime" placeholder="Time">
+
+<select id="taskDay">
+<option>Monday</option>
+<option>Tuesday</option>
+<option>Wednesday</option>
+<option>Thursday</option>
+<option>Friday</option>
+<option>Saturday</option>
+<option>Sunday</option>
+</select>
+
+<button onclick="addTask()">Add Task</button>
+
+<button onclick="toggleDark()">🌙</button>
+
+</div>
+
+<div class="progressBox">
+
+Progress Today
+
+<div class="progressBar">
+<div id="progress"></div>
+</div>
+
+</div>
+
+<div id="planner"></div>
+
+<h2>🎯 Goals</h2>
+
+<input id="goalInput" placeholder="Add Goal">
+<button onclick="addGoal()">Add Goal</button>
+
+<ul id="goalList"></ul>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
