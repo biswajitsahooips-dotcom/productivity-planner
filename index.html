@@ -3,57 +3,148 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Productivity Planner</title>
-<link rel="stylesheet" href="style.css">
+<title>Daily Timeline Planner</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f8;
+text-align:center;
+}
+
+h1{
+margin-top:20px;
+}
+
+.container{
+width:500px;
+margin:auto;
+}
+
+.input-box{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 3px 6px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:5px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px 15px;
+background:#0077ff;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.timeline{
+border-left:3px solid #ccc;
+margin-left:40px;
+padding-left:20px;
+text-align:left;
+}
+
+.timeline-item{
+margin:20px 0;
+position:relative;
+}
+
+.dot{
+width:16px;
+height:16px;
+background:red;
+border-radius:50%;
+position:absolute;
+left:-29px;
+top:5px;
+}
+
+.card{
+background:white;
+padding:12px;
+border-radius:8px;
+box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+.time{
+color:#0077ff;
+font-weight:bold;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<h1>🚀 Productivity Planner</h1>
+<h1>📅 Daily Timeline Planner</h1>
 
-<div class="controls">
+<div class="container">
 
-<input id="taskName" placeholder="Task">
+<div class="input-box">
 
-<input id="taskTime" placeholder="Time">
+<input id="taskTitle" placeholder="Task Name">
 
-<select id="taskDay">
-<option>Monday</option>
-<option>Tuesday</option>
-<option>Wednesday</option>
-<option>Thursday</option>
-<option>Friday</option>
-<option>Saturday</option>
-<option>Sunday</option>
-</select>
+<input id="taskTime" placeholder="Time (example: 7:00 AM)">
+
+<input id="taskDesc" placeholder="Description">
+
+<br>
 
 <button onclick="addTask()">Add Task</button>
 
-<button onclick="toggleDark()">🌙</button>
+</div>
+
+<div id="timeline" class="timeline"></div>
 
 </div>
 
-<div class="progressBox">
+<script>
 
-Progress Today
-  <div id="timeline" class="timeline"></div>
+function addTask(){
 
-<div class="progressBar">
-<div id="progress"></div>
+let title=document.getElementById("taskTitle").value;
+let time=document.getElementById("taskTime").value;
+let desc=document.getElementById("taskDesc").value;
+
+if(title==="") return;
+
+let timeline=document.getElementById("timeline");
+
+let item=document.createElement("div");
+item.className="timeline-item";
+
+item.innerHTML=`
+
+<div class="dot"></div>
+
+<div class="card">
+
+<div class="time">${time}</div>
+
+<h3>${title}</h3>
+
+<p>${desc}</p>
+
 </div>
 
-</div>
+`;
 
-<div id="planner"></div>
+timeline.appendChild(item);
 
-<h2>🎯 Goals</h2>
+}
 
-<input id="goalInput" placeholder="Add Goal">
-<button onclick="addGoal()">Add Goal</button>
-
-<ul id="goalList"></ul>
-
-<script src="script.js"></script>
+</script>
 
 </body>
 
