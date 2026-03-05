@@ -4,33 +4,38 @@
 <meta charset="UTF-8">
 <title>Daily Timeline Planner</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 
 body{
 font-family:Arial;
 background:#f4f6f8;
 text-align:center;
+margin:0;
+padding:10px;
 }
 
 .container{
-width:500px;
+max-width:600px;
 margin:auto;
 }
 
-.input-box{
+.input-box,.target-box{
 background:white;
-padding:20px;
+padding:15px;
 border-radius:10px;
 box-shadow:0 3px 6px rgba(0,0,0,0.1);
 margin-bottom:20px;
 }
 
-input{
-width:90%;
+input,textarea{
+width:95%;
 padding:10px;
-margin:5px;
+margin:6px;
 border-radius:6px;
 border:1px solid #ccc;
+font-size:16px;
 }
 
 button{
@@ -40,11 +45,12 @@ color:white;
 border:none;
 border-radius:6px;
 cursor:pointer;
+font-size:16px;
 }
 
 .timeline{
 border-left:3px solid #ccc;
-margin-left:40px;
+margin-left:20px;
 padding-left:20px;
 text-align:left;
 }
@@ -80,8 +86,21 @@ font-weight:bold;
 margin-top:8px;
 }
 
-.calendar{
-margin-top:20px;
+/* phone friendly */
+@media (max-width:600px){
+
+h1{
+font-size:22px;
+}
+
+.container{
+width:100%;
+}
+
+input,textarea{
+width:92%;
+}
+
 }
 
 </style>
@@ -92,6 +111,32 @@ margin-top:20px;
 <h1>📅 Daily Timeline Planner</h1>
 
 <div class="container">
+
+<!-- YEARLY TARGET -->
+
+<div class="target-box">
+
+<h3>🎯 Yearly Target</h3>
+
+<textarea id="yearTarget" placeholder="Your goal for this year"></textarea>
+
+<button onclick="saveYearTarget()">Save Year Target</button>
+
+</div>
+
+<!-- MONTHLY TARGET -->
+
+<div class="target-box">
+
+<h3>📆 Monthly Target</h3>
+
+<textarea id="monthTarget" placeholder="Your goal for this month"></textarea>
+
+<button onclick="saveMonthTarget()">Save Month Target</button>
+
+</div>
+
+<!-- TASK INPUT -->
 
 <div class="input-box">
 
@@ -111,7 +156,7 @@ margin-top:20px;
 
 <div id="timeline" class="timeline"></div>
 
-<div class="calendar">
+<div>
 
 <h3>Select Day</h3>
 
@@ -191,9 +236,7 @@ ${task.title}
 <label class="complete">
 
 <input type="checkbox"
-
 ${task.done?'checked':''}
-
 onclick="toggleComplete(${i})">
 
 Complete
@@ -211,6 +254,33 @@ timeline.appendChild(item);
 });
 
 }
+
+/* YEAR TARGET */
+
+function saveYearTarget(){
+
+let text=document.getElementById("yearTarget").value;
+
+localStorage.setItem("yearTarget",text);
+
+}
+
+document.getElementById("yearTarget").value=
+localStorage.getItem("yearTarget") || "";
+
+
+/* MONTH TARGET */
+
+function saveMonthTarget(){
+
+let text=document.getElementById("monthTarget").value;
+
+localStorage.setItem("monthTarget",text);
+
+}
+
+document.getElementById("monthTarget").value=
+localStorage.getItem("monthTarget") || "";
 
 </script>
 
