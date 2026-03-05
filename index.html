@@ -2,31 +2,40 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Daily Timeline Planner</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Planner</title>
 
 <style>
 
 body{
 font-family:Arial;
 background:#f4f6f8;
-text-align:center;
 margin:0;
 padding:10px;
+text-align:center;
+transition:0.3s;
+}
+
+.dark{
+background:#1e1e1e;
+color:white;
 }
 
 .container{
-max-width:600px;
+max-width:650px;
 margin:auto;
 }
 
-.input-box,.target-box{
+.box{
 background:white;
 padding:15px;
+margin-bottom:20px;
 border-radius:10px;
 box-shadow:0 3px 6px rgba(0,0,0,0.1);
-margin-bottom:20px;
+}
+
+.dark .box{
+background:#2c2c2c;
 }
 
 input,textarea{
@@ -45,7 +54,20 @@ color:white;
 border:none;
 border-radius:6px;
 cursor:pointer;
-font-size:16px;
+}
+
+.progress{
+width:100%;
+background:#ddd;
+border-radius:10px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.progress-bar{
+height:15px;
+background:#00c853;
+width:0%;
 }
 
 .timeline{
@@ -61,20 +83,24 @@ position:relative;
 }
 
 .dot{
-width:16px;
-height:16px;
+width:14px;
+height:14px;
 background:red;
 border-radius:50%;
 position:absolute;
-left:-29px;
-top:8px;
+left:-27px;
+top:6px;
 }
 
 .card{
 background:white;
-padding:12px;
+padding:10px;
 border-radius:8px;
-box-shadow:0 2px 5px rgba(0,0,0,0.15);
+box-shadow:0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dark .card{
+background:#3a3a3a;
 }
 
 .time{
@@ -82,20 +108,7 @@ color:#0077ff;
 font-weight:bold;
 }
 
-.complete{
-margin-top:8px;
-}
-
-/* phone friendly */
-@media (max-width:600px){
-
-h1{
-font-size:22px;
-}
-
-.container{
-width:100%;
-}
+@media(max-width:600px){
 
 input,textarea{
 width:92%;
@@ -108,47 +121,75 @@ width:92%;
 
 <body>
 
-<h1>📅 Daily Timeline Planner</h1>
+<h1>📅 Life Planner</h1>
+
+<button onclick="toggleDark()">🌙 Dark Mode</button>
 
 <div class="container">
 
-<!-- YEARLY TARGET -->
+<!-- YEAR GOAL -->
 
-<div class="target-box">
+<div class="box">
 
-<h3>🎯 Yearly Target</h3>
+<h3>🎯 Yearly Goals</h3>
 
-<textarea id="yearTarget" placeholder="Your goal for this year"></textarea>
+<textarea id="yearGoals" placeholder="Write yearly goals"></textarea>
 
-<button onclick="saveYearTarget()">Save Year Target</button>
+<input type="number" id="yearProgress" placeholder="Progress %">
+
+<button onclick="saveYear()">Save</button>
+
+<div class="progress">
+<div id="yearBar" class="progress-bar"></div>
+</div>
 
 </div>
 
-<!-- MONTHLY TARGET -->
+<!-- MONTH GOAL -->
 
-<div class="target-box">
+<div class="box">
 
-<h3>📆 Monthly Target</h3>
+<h3>📆 Monthly Goals</h3>
 
-<textarea id="monthTarget" placeholder="Your goal for this month"></textarea>
+<textarea id="monthGoals"></textarea>
 
-<button onclick="saveMonthTarget()">Save Month Target</button>
+<input type="number" id="monthProgress" placeholder="Progress %">
+
+<button onclick="saveMonth()">Save</button>
+
+<div class="progress">
+<div id="monthBar" class="progress-bar"></div>
+</div>
+
+</div>
+
+<!-- HABITS -->
+
+<div class="box">
+
+<h3>✅ Daily Habits</h3>
+
+<label><input type="checkbox" id="habit1"> Exercise</label><br>
+<label><input type="checkbox" id="habit2"> Study</label><br>
+<label><input type="checkbox" id="habit3"> Read Book</label><br>
+
+<button onclick="saveHabits()">Save Habits</button>
 
 </div>
 
 <!-- TASK INPUT -->
 
-<div class="input-box">
+<div class="box">
+
+<h3>🕒 Add Task</h3>
 
 <input type="date" id="taskDate">
 
-<input id="taskTime" placeholder="Time (7:00 AM)">
+<input id="taskTime" placeholder="Time">
 
 <input id="taskTitle" placeholder="Task">
 
 <input id="taskDesc" placeholder="Description">
-
-<br>
 
 <button onclick="addTask()">Add Task</button>
 
@@ -156,19 +197,13 @@ width:92%;
 
 <div id="timeline" class="timeline"></div>
 
-<div>
-
-<h3>Select Day</h3>
-
 <input type="date" id="viewDate" onchange="loadTasks()">
-
-</div>
 
 </div>
 
 <script>
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
 
 function saveTasks(){
 localStorage.setItem("tasks",JSON.stringify(tasks));
@@ -176,28 +211,22 @@ localStorage.setItem("tasks",JSON.stringify(tasks));
 
 function addTask(){
 
-let date=document.getElementById("taskDate").value;
-let time=document.getElementById("taskTime").value;
-let title=document.getElementById("taskTitle").value;
-let desc=document.getElementById("taskDesc").value;
+let date=taskDate.value;
+let time=taskTime.value;
+let title=taskTitle.value;
+let desc=taskDesc.value;
 
 if(title==="") return;
 
-tasks.push({
-date,
-time,
-title,
-desc,
-done:false
-});
+tasks.push({date,time,title,desc,done:false});
 
 saveTasks();
 loadTasks();
 }
 
-function toggleComplete(index){
+function toggleDone(i){
 
-tasks[index].done=!tasks[index].done;
+tasks[i].done=!tasks[i].done;
 
 saveTasks();
 loadTasks();
@@ -205,49 +234,37 @@ loadTasks();
 
 function loadTasks(){
 
-let timeline=document.getElementById("timeline");
 timeline.innerHTML="";
 
-let selected=document.getElementById("viewDate").value;
+let d=viewDate.value;
 
-tasks.forEach((task,i)=>{
+tasks.forEach((t,i)=>{
 
-if(task.date===selected){
+if(t.date===d){
 
-let item=document.createElement("div");
-item.className="timeline-item";
+let div=document.createElement("div");
 
-item.innerHTML=`
+div.className="timeline-item";
+
+div.innerHTML=`
 
 <div class="dot"></div>
 
 <div class="card">
 
-<div class="time">${task.time}</div>
+<div class="time">${t.time}</div>
 
-<h3 style="text-decoration:${task.done?'line-through':'none'}">
+<h3 style="text-decoration:${t.done?'line-through':'none'}">${t.title}</h3>
 
-${task.title}
+<p>${t.desc}</p>
 
-</h3>
-
-<p>${task.desc}</p>
-
-<label class="complete">
-
-<input type="checkbox"
-${task.done?'checked':''}
-onclick="toggleComplete(${i})">
-
-Complete
-
-</label>
+<input type="checkbox" ${t.done?'checked':''} onclick="toggleDone(${i})"> Done
 
 </div>
 
 `;
 
-timeline.appendChild(item);
+timeline.appendChild(div);
 
 }
 
@@ -255,32 +272,59 @@ timeline.appendChild(item);
 
 }
 
-/* YEAR TARGET */
+/* YEAR */
 
-function saveYearTarget(){
+function saveYear(){
 
-let text=document.getElementById("yearTarget").value;
+localStorage.setItem("yearGoals",yearGoals.value);
+localStorage.setItem("yearProgress",yearProgress.value);
 
-localStorage.setItem("yearTarget",text);
-
-}
-
-document.getElementById("yearTarget").value=
-localStorage.getItem("yearTarget") || "";
-
-
-/* MONTH TARGET */
-
-function saveMonthTarget(){
-
-let text=document.getElementById("monthTarget").value;
-
-localStorage.setItem("monthTarget",text);
+yearBar.style.width=yearProgress.value+"%";
 
 }
 
-document.getElementById("monthTarget").value=
-localStorage.getItem("monthTarget") || "";
+/* MONTH */
+
+function saveMonth(){
+
+localStorage.setItem("monthGoals",monthGoals.value);
+localStorage.setItem("monthProgress",monthProgress.value);
+
+monthBar.style.width=monthProgress.value+"%";
+
+}
+
+/* HABITS */
+
+function saveHabits(){
+
+localStorage.setItem("habit1",habit1.checked);
+localStorage.setItem("habit2",habit2.checked);
+localStorage.setItem("habit3",habit3.checked);
+
+}
+
+/* DARK MODE */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+}
+
+/* LOAD DATA */
+
+yearGoals.value=localStorage.getItem("yearGoals")||"";
+yearProgress.value=localStorage.getItem("yearProgress")||0;
+yearBar.style.width=yearProgress.value+"%";
+
+monthGoals.value=localStorage.getItem("monthGoals")||"";
+monthProgress.value=localStorage.getItem("monthProgress")||0;
+monthBar.style.width=monthProgress.value+"%";
+
+habit1.checked=localStorage.getItem("habit1")==="true";
+habit2.checked=localStorage.getItem("habit2")==="true";
+habit3.checked=localStorage.getItem("habit3")==="true";
 
 </script>
 
