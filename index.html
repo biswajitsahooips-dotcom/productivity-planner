@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="UTF-8">
 <title>Daily Timeline Planner</title>
@@ -11,10 +10,6 @@ body{
 font-family:Arial;
 background:#f4f6f8;
 text-align:center;
-}
-
-h1{
-margin-top:20px;
 }
 
 .container{
@@ -66,7 +61,7 @@ background:red;
 border-radius:50%;
 position:absolute;
 left:-29px;
-top:5px;
+top:8px;
 }
 
 .card{
@@ -81,8 +76,15 @@ color:#0077ff;
 font-weight:bold;
 }
 
-</style>
+.complete{
+margin-top:8px;
+}
 
+.calendar{
+margin-top:20px;
+}
+
+</style>
 </head>
 
 <body>
@@ -93,9 +95,11 @@ font-weight:bold;
 
 <div class="input-box">
 
-<input id="taskTitle" placeholder="Task Name">
+<input type="date" id="taskDate">
 
-<input id="taskTime" placeholder="Time (example: 7:00 AM)">
+<input id="taskTime" placeholder="Time (7:00 AM)">
+
+<input id="taskTitle" placeholder="Task">
 
 <input id="taskDesc" placeholder="Description">
 
@@ -107,19 +111,63 @@ font-weight:bold;
 
 <div id="timeline" class="timeline"></div>
 
+<div class="calendar">
+
+<h3>Select Day</h3>
+
+<input type="date" id="viewDate" onchange="loadTasks()">
+
+</div>
+
 </div>
 
 <script>
 
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function saveTasks(){
+localStorage.setItem("tasks",JSON.stringify(tasks));
+}
+
 function addTask(){
 
-let title=document.getElementById("taskTitle").value;
+let date=document.getElementById("taskDate").value;
 let time=document.getElementById("taskTime").value;
+let title=document.getElementById("taskTitle").value;
 let desc=document.getElementById("taskDesc").value;
 
 if(title==="") return;
 
+tasks.push({
+date,
+time,
+title,
+desc,
+done:false
+});
+
+saveTasks();
+loadTasks();
+}
+
+function toggleComplete(index){
+
+tasks[index].done=!tasks[index].done;
+
+saveTasks();
+loadTasks();
+}
+
+function loadTasks(){
+
 let timeline=document.getElementById("timeline");
+timeline.innerHTML="";
+
+let selected=document.getElementById("viewDate").value;
+
+tasks.forEach((task,i)=>{
+
+if(task.date===selected){
 
 let item=document.createElement("div");
 item.className="timeline-item";
@@ -130,11 +178,27 @@ item.innerHTML=`
 
 <div class="card">
 
-<div class="time">${time}</div>
+<div class="time">${task.time}</div>
 
-<h3>${title}</h3>
+<h3 style="text-decoration:${task.done?'line-through':'none'}">
 
-<p>${desc}</p>
+${task.title}
+
+</h3>
+
+<p>${task.desc}</p>
+
+<label class="complete">
+
+<input type="checkbox"
+
+${task.done?'checked':''}
+
+onclick="toggleComplete(${i})">
+
+Complete
+
+</label>
 
 </div>
 
@@ -144,8 +208,11 @@ timeline.appendChild(item);
 
 }
 
+});
+
+}
+
 </script>
 
 </body>
-
 </html>
